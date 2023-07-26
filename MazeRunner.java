@@ -13,14 +13,24 @@ public class MazeRunner {
 	static void initializeMaze() {
 		for (int i=0; i<maze.length; i++) {
 			for (int j=0; j<maze.length; j++) {
-				if (i>0 && i<maze.length-1) {
+				if (i>0 && i<maze.length-1 && j>0 && j<maze.length-1) {
 					if (i==1 && j==1)
 						maze[i][j] = 'P';
-					if (i==1 && j<maze.length-1)
+					else if (i==5 && j==5)
+						maze[i][j] = 'E';
+					else if (i==2 && j>0 && j<4 && j==5)
+						System.out.println("safsg");
+//						maze[i][j] = '#';
+					else
 						maze[i][j] = '.';
+						
+//					if (i==1 && j<maze.length-1)
+//						maze[i][j] = '.';
+					
 				}
-				maze[i][j] = '#';
-				
+				else {
+					maze[i][j] = '#';
+				}	
 				}
 			}
 		}
