@@ -4,36 +4,23 @@ import java.util.Scanner;
 public class MazeRunner {
 	
 	
-	public static char[][] maze = new char[7][7];
+	public static char[][] maze;
 	public static int numberOfSteps = 0;
 	public static int score = 0;
 	public static int highscore = 0;
 	
 	//initialize the maze
 	static void initializeMaze() {
-		for (int i=0; i<maze.length; i++) {
-			for (int j=0; j<maze.length; j++) {
-				if (i>0 && i<maze.length-1 && j>0 && j<maze.length-1) {
-					if (i==1 && j==1)
-						maze[i][j] = 'P';
-					else if (i==5 && j==5)
-						maze[i][j] = 'E';
-					else if (i==2 && j>0 && j<4 && j==5)
-						System.out.println("safsg");
-//						maze[i][j] = '#';
-					else
-						maze[i][j] = '.';
-						
-//					if (i==1 && j<maze.length-1)
-//						maze[i][j] = '.';
-					
-				}
-				else {
-					maze[i][j] = '#';
-				}	
-				}
-			}
-		}
+		
+		maze = new char[][] {{'#', '#', '#', '#', '#', '#', '#'}, 
+				             {'#', 'P', '.', '.', '.', '.', '#'}, 
+				             {'#', '#', '#', '#', '.', '#', '#'}, 
+				             {'#', '.', '.', '.', '.', '.', '#'},
+				             {'#', '#', '#', '.', '#', '#', '#'}, 
+			 	             {'#', '.', '.', '.', '.', 'E', '#'}, 
+				             {'#', '#', '#', '#', '#', '#', '#'}
+			 	             };
+	}
 
 	
 	static void printMaze() {
