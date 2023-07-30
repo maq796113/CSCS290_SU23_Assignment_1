@@ -5,11 +5,36 @@ public class MazeRunner {
 	
 	public static long startTime;
 	public static long endTime;
+	public static float elapsedTime;
 	public static char[][] maze;
 	public static int numberOfSteps = 0;
 	public static int score = 0;
+	public static int[] scores;
 	public static int highscore = 0;
 	public static boolean exit_game = false;
+	public static Scanner scan = new Scanner(System.in);
+	
+	
+	static void update_time() {
+		endTime = System.nanoTime();
+		float start = startTime;
+		float end = endTime;
+		
+		elapsedTime = (end-start)/1000000000;
+	}
+	
+	static void playAgain() {
+		System.out.print("Do you want to play again? (y/n) ");
+		char cho = scan.next().charAt(0);
+		if (cho == 'Y' || cho == 'y') {
+			gameMenu();
+		}
+		else if (cho == 'N' || cho == 'n') {
+			exitGame();
+		}
+		else
+			System.out.println("Invalid Input");
+	}
 	
 	//initialize the maze
 	static void initializeMaze() {
@@ -25,32 +50,29 @@ public class MazeRunner {
 	}
 
 	static void gameMenu() {
-		System.out.println("Welcome to the \"Maze Runner\" game!"
-				+ "\n\na. Play Game\nb. Instructions\nc. Credits\n"
+		System.out.println("\n\na. Play Game\nb. Instructions\nc. Credits\n"
 				+ "d. High Score\ne. Exit");
-		
-		try (Scanner scan = new Scanner(System.in)) {
-			System.out.print("Choose wisely (a/b/c/d/e): ");
-			char choice = scan.next().charAt(0);
-			if (Character.isUpperCase(choice)) {
-				choice = Character.toLowerCase(choice);
-			}
-			switch(choice) {
-			case 'a':
-				startNewGame();
-			case 'b':
-				showInstructions();
-			case 'c':
-				showCredits();
-			case 'd':
-				showHighScore();
-			case 'e':
-				exitGame();
-			default:
-				System.out.println("Invalid Choice");
-				break;
-			}
+		System.out.print("Choose wisely (a/b/c/d/e): ");
+		char choice = scan.next().charAt(0);
+		if (Character.isUpperCase(choice)) {
+			choice = Character.toLowerCase(choice);
 		}
+		switch(choice) {
+		case 'a':
+			startNewGame();
+		case 'b':
+			showInstructions();
+		case 'c':
+			showCredits();
+		case 'd':
+			showHighScore();
+		case 'e':
+			exitGame();
+		default:
+			System.out.println("Invalid Choice");
+			break;
+		}
+		
 	}
 	
 	static void printMaze() {
@@ -64,7 +86,9 @@ public class MazeRunner {
 	}
 	
 	static Boolean isValidMove(int newX, int newY) {
+		
 		if (maze[newX][newY] == '#') {
+			updateScore();
 			return false;
 		}
 		return true;
@@ -72,7 +96,12 @@ public class MazeRunner {
 	
 	static void movePlayer(char direction) {
 		
-		
+		if (direction != '\0') {
+			numberOfSteps += 1;
+		}
+		if (Character.isUpperCase(direction)) {
+			direction = Character.toLowerCase(direction);
+		}
 		switch(direction) {
 		
 		case 'w':
@@ -82,6 +111,8 @@ public class MazeRunner {
 						if (isValidMove(i-1, j)) {
 							maze[i][j] = '.';
 							maze[i-1][j] = 'P';
+							return;
+							
 						}
 						else
 							System.out.println("You Hit A Wall, Try Again");
@@ -97,6 +128,7 @@ public class MazeRunner {
 						if (isValidMove(i+1, j)) {
 							maze[i][j] = '.';
 							maze[i+1][j] = 'P';
+							return;
 						}
 						else
 							System.out.println("You Hit A Wall, Try Again");
@@ -113,6 +145,7 @@ public class MazeRunner {
 						if (isValidMove(i, j-1)) {
 							maze[i][j] = '.';
 							maze[i][j-1] = 'P';
+							return;
 						}
 						else
 							System.out.println("You Hit A Wall, Try Again");
@@ -128,6 +161,7 @@ public class MazeRunner {
 						if (isValidMove(i, j+1)) {
 							maze[i][j] = '.';
 							maze[i][j+1] = 'P';
+							return;
 						}
 						else
 							System.out.println("You Hit A Wall, Try Again");
@@ -157,43 +191,66 @@ public class MazeRunner {
 	}
 	
 	static void playGame() {
-		Scanner scan = new Scanner(System.in);
+		
 		char move;
+		startTime = System.nanoTime();
 		while (!exit_game) {
-			startTime = System.nanoTime();
 			System.out.println();
 			printMaze();
 			System.out.println();
 			System.out.print("Enter your move: ");
 			move = scan.next().charAt(0);
+			update_time();
 			movePlayer(move);
 			if (hasPlayerWon()) {
-				endTime = System.nanoTime();
+				updateScore();
 				displayResult();
+				playAgain();
+				
+			}
+			if (elapsedTime > 24) {
+				System.out.println("You Ran Out of Time!!\nYou Lost!");
+				playAgain();
 			}
 			
 			
 		}
+		
 			
 	}
 	
 	static void displayResult() {
-		float start = startTime;
-		float end = endTime;
 		
-		float duration = (end-start)/1000000000;
 		
-		System.out.println("\nYou Took: " + duration + " s");
+		System.out.println("\nYou Took: " + elapsedTime + " seconds");
 		System.out.println("Your Score: "+score);
-
+		showHighScore();
+		System.out.println("Number of Steps: "+numberOfSteps );
 	}
 	
 	static void updateScore() {
-		score += 1;
+		if (elapsedTime<=5  && elapsedTime>0)
+			score = 50000;
+		else if (elapsedTime<=10 && elapsedTime>5)
+			score = 10000;
+		else if (elapsedTime<=15 && elapsedTime>10)
+			score = 5000;
+		else if (elapsedTime<=20 && elapsedTime>15)
+			score = 1000;
+		else if (elapsedTime<=22 && elapsedTime>20)
+			score = 500;
+		else
+			score = 5;
+		
 	}
 	
 	static void startNewGame() {
 		initializeMaze();
+		startTime = 0;
+		endTime = 0;
+		elapsedTime = 0;
+		numberOfSteps = 0;
+		score = 0;
 		playGame();
 	}
 	
@@ -210,6 +267,7 @@ public class MazeRunner {
 	
 	static void exitGame() {
 		System.out.println("Exiting the Game.......");
+		exit_game = true;
 		System.exit(0);
 	}
 	
@@ -220,7 +278,7 @@ public class MazeRunner {
 
 
 	public static void main(String[] args) {
-		
+		System.out.println("Welcome to the \"Maze Runner\" game!");
 		
 		gameMenu();
 		
