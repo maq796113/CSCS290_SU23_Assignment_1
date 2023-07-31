@@ -2,7 +2,8 @@ import java.util.Scanner;
 
 
 public class MazeRunner {
-	
+
+	//initializing and declaring variables
 	public static long startTime;
 	public static long endTime;
 	public static float elapsedTime;
@@ -15,35 +16,35 @@ public class MazeRunner {
 	public static Scanner scan = new Scanner(System.in);
 	
 	static void updateHighscore() {
-		if (scores == null) {
-			scores = new int[1];
-			scores[0] = score;
-			highscore = score;
+		if (scores == null) {             //check if the array isn't initialized already
+			scores = new int[1];      //initializes the array with length 1 when we know that the array isn't initialized yet
+			scores[0] = score;        //the current score would go in the newly initialized array
+			highscore = score;        //highscore is updated to the current score 
 		}
 		else {
-			int len = scores.length;
-			int[] hs = new int[len + 1];
-			for (int i = 0; i < len; i++)
-				hs[i] = scores[i];
+			int len = scores.length;     
+			int[] hs = new int[len + 1];    //initializing a new array with length one greater than the length of our scores array where we store all the scores. We are doing this to add a new score
+			for (int i = 0; i < len; i++)      
+				hs[i] = scores[i];       
 			hs[len] = score;
 			scores = hs;
 			
 			int max = scores[0];
-			for (int j = 1; j < len + 1; j++)
+			for (int j = 1; j < len + 1; j++)     //finding the max in the int array
 	            if (scores[j] > max)
 	                max = scores[j];
 	         
-			highscore = max;
+			highscore = max;            //setting the max to highscore
 		}
 		
 	}
 	
 	static void update_time() {
-		endTime = System.nanoTime();
-		float start = startTime;
+		endTime = System.nanoTime();     //end time
+		float start = startTime;     //converting variables to float type
 		float end = endTime;
 		
-		elapsedTime = (end-start)/1000000000;
+		elapsedTime = (end-start)/1000000000;      //calculating the time elapsed and then converting micro seconds to seconds
 	}
 	
 	static void playAgain() {
@@ -278,7 +279,13 @@ public class MazeRunner {
 	}
 	
 	static void showInstructions() {
-		System.out.println("1. When");
+		System.out.println("1. You are suppossed to get to E in the maze, where  \'#\' represents walls that are impassable, "+
+				   "\'.\' represents open paths that you can move through,"+
+				   " P represents the starting position of the player, "+
+				   "E represents the exit point that the player needs to reach.\n2."+
+				   "You are supposed to move using the \'w\' (up), \'s\' (down), \'a\' (left), \'d\' (right) "+
+				   "\n3. If you don't complete the maze under 25 seconds, you will loose."+
+				   "\n4. When you complete the maze in time, you will be awarded score with respect to how quick you were in completing");
 	}
 	
 	static void showCredits() {
