@@ -2,8 +2,7 @@ import java.util.Scanner;
 
 
 public class MazeRunner {
-
-	//initializing and declaring variables
+	
 	public static long startTime;
 	public static long endTime;
 	public static float elapsedTime;
@@ -14,37 +13,45 @@ public class MazeRunner {
 	public static int highscore = 0;
 	public static boolean exit_game = false;
 	public static Scanner scan = new Scanner(System.in);
+	public static Thread thread;
+	
 	
 	static void updateHighscore() {
-		if (scores == null) {             //check if the array isn't initialized already
-			scores = new int[1];      //initializes the array with length 1 when we know that the array isn't initialized yet
-			scores[0] = score;        //the current score would go in the newly initialized array
-			highscore = score;        //highscore is updated to the current score 
+		if (scores == null) {
+			scores = new int[1];
+			scores[0] = score;
+			highscore = score;
 		}
 		else {
-			int len = scores.length;     
-			int[] hs = new int[len + 1];    //initializing a new array with length one greater than the length of our scores array where we store all the scores. We are doing this to add a new score
-			for (int i = 0; i < len; i++)      
-				hs[i] = scores[i];       
+			int len = scores.length;
+			int[] hs = new int[len + 1];
+			for (int i = 0; i < len; i++)
+				hs[i] = scores[i];
 			hs[len] = score;
 			scores = hs;
 			
 			int max = scores[0];
-			for (int j = 1; j < len + 1; j++)     //finding the max in the int array
+			for (int j = 1; j < len + 1; j++)
 	            if (scores[j] > max)
 	                max = scores[j];
 	         
-			highscore = max;            //setting the max to highscore
+			highscore = max;
 		}
 		
 	}
 	
-	static void update_time() {
-		endTime = System.nanoTime();     //end time
-		float start = startTime;     //converting variables to float type
-		float end = endTime;
+	static void update_time() { 
+		//my previous method was just to get the time take for putting the input using System.nanoTime()
+//		endTime = System.nanoTime();
+//		float start = startTime;
+//		float end = endTime;
+//		
+//		elapsedTime = (end-start)/1000000000;
 		
-		elapsedTime = (end-start)/1000000000;      //calculating the time elapsed and then converting micro seconds to seconds
+		
+		
+		
+		
 	}
 	
 	static void playAgain() {
@@ -103,7 +110,7 @@ public class MazeRunner {
 		System.out.println();
 		for (int k=0; k<maze.length; k++) {
 			for (int l=0; l<maze.length; l++) {
-				System.out.print(maze[k][l]);
+				System.out.print(maze[k][l]+" ");
 				}
 			System.out.println();
 			}
@@ -214,32 +221,73 @@ public class MazeRunner {
 		return res;
 	}
 	
+	
+//static void playGame() {
+//		
+//		char move;
+//		startTime = System.nanoTime();
+//		while (!exit_game) {
+//			System.out.println();
+//			printMaze();
+//			System.out.println();
+//			System.out.print("Enter your move: ");
+//			move = scan.next().charAt(0);
+//			update_time();
+//			movePlayer(move);
+//			if (hasPlayerWon()) {
+//				updateScore();
+//				displayResult();
+//				playAgain();
+//				
+//			}
+//			if (elapsedTime > 24) {
+//				System.out.println("You Ran Out of Time!!\nYou Lost!");
+//				playAgain();
+//			}
+//			
+//			
+//		}
+//		
+//			
+//	}
+	
 	static void playGame() {
 		
-		char move;
-		startTime = System.nanoTime();
-		while (!exit_game) {
-			System.out.println();
-			printMaze();
-			System.out.println();
-			System.out.print("Enter your move: ");
-			move = scan.next().charAt(0);
-			update_time();
-			movePlayer(move);
-			if (hasPlayerWon()) {
-				updateScore();
-				displayResult();
-				playAgain();
-				
-			}
-			if (elapsedTime > 24) {
-				System.out.println("You Ran Out of Time!!\nYou Lost!");
-				playAgain();
-			}
-			
-			
-		}
 		
+//		startTime = System.nanoTime();
+		startTime = System.currentTimeMillis();
+		thread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				char move;
+				while (!hasPlayerWon()) {
+					System.out.println();
+					printMaze();
+					System.out.println();
+					System.out.print("Enter your move: ");
+					move = scan.next().charAt(0);
+					endTime = System.currentTimeMillis();
+	                elapsedTime = (endTime - startTime)/1000;
+					movePlayer(move);
+				}
+				scan.close();
+			}
+			
+		});
+		thread.start();
+		
+		
+		try {
+			thread.join(25000);
+		} catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+		if (thread.isAlive()) {
+            thread.interrupt();
+            System.out.println("You Ran Out of Time!!\nYou Lost!");
+			playAgain();
+        }
 			
 	}
 	
@@ -303,11 +351,6 @@ public class MazeRunner {
 	}
 	
 	
-	
-
-
-
-
 	public static void main(String[] args) {
 		System.out.println("Welcome to the \"Maze Runner\" game!");
 		
