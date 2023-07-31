@@ -78,10 +78,10 @@ public class MazeRunner {
 				+ "d. High Score\ne. Exit");
 		System.out.print("Choose wisely (a/b/c/d/e): ");
 		char choice = scan.next().charAt(0);
-		if (Character.isUpperCase(choice)) {
+		if (Character.isUpperCase(choice)) {                   //checking if the character entered is upper case, if it is, it's supposed to be converted to a lower case as we are going to use switches
 			choice = Character.toLowerCase(choice);
 		}
-		switch(choice) {
+		switch(choice) {     
 		case 'a':
 			startNewGame();
 		case 'b':
@@ -101,8 +101,8 @@ public class MazeRunner {
 	
 	static void printMaze() {
 		System.out.println();
-		for (int k=0; k<maze.length; k++) {
-			for (int l=0; l<maze.length; l++) {
+		for (int k=0; k<maze.length; k++) {    //helps print rows
+			for (int l=0; l<maze.length; l++) { //helps print column
 				System.out.print(maze[k][l]+" ");
 				}
 			System.out.println();
@@ -111,7 +111,7 @@ public class MazeRunner {
 	
 	static Boolean isValidMove(int newX, int newY) {
 		
-		if (maze[newX][newY] == '#') {
+		if (maze[newX][newY] == '#') {  //if the players move gets to the part of array where '#' resides, the move would be considered invalid 
 			updateScore();
 			return false;
 		}
@@ -120,20 +120,20 @@ public class MazeRunner {
 	
 	static void movePlayer(char direction) {
 		
-		if (direction != '\0') {
+		if (direction != '\0') {        //checking for null character, if it's not, number of steps increment
 			numberOfSteps += 1;
 		}
 		if (Character.isUpperCase(direction)) {
-			direction = Character.toLowerCase(direction);
+			direction = Character.toLowerCase(direction);    //converts upper case letters to lower case
 		}
 		switch(direction) {
 		
 		case 'w':
-			for (int i=0; i<maze.length; i++) {
+			for (int i=0; i<maze.length; i++) {    
 				for (int j=0; j<maze[0].length; j++) {
-					if (maze[i][j] == 'P') {
+					if (maze[i][j] == 'P') {   // we find where our posion P is then move accordingly by swapping places with .
 						if (isValidMove(i-1, j)) {
-							maze[i][j] = '.';
+							maze[i][j] = '.';  
 							maze[i-1][j] = 'P';
 							return;
 							
@@ -205,8 +205,8 @@ public class MazeRunner {
 		for (int i=0; i<maze.length; i++) {
 			for (int j=0; j<maze[0].length; j++) {
 				if (maze[i][j] == 'P') {
-					if (maze[i][j+1]!='E') {
-						res = false;
+					if (maze[i][j+1]!='E') {  // if the exit or E is not one step to your right in the maze, then the player has not won, else the palyer has won. this all asumes the pattern of the maze is same    
+						res = false;   
 					}
 				}
 			}
@@ -232,7 +232,7 @@ public class MazeRunner {
 				playAgain();
 				
 			}
-			if (elapsedTime > 24) {
+			if (elapsedTime > 24) {   // time will run out when timer passes 24 seconds mark
 				System.out.println("You Ran Out of Time!!\nYou Lost!");
 				playAgain();
 			}
