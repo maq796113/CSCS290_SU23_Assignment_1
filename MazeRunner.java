@@ -14,6 +14,29 @@ public class MazeRunner {
 	public static boolean exit_game = false;
 	public static Scanner scan = new Scanner(System.in);
 	
+	static void updateHighscore() {
+		if (scores == null) {
+			scores = new int[1];
+			scores[0] = score;
+			highscore = score;
+		}
+		else {
+			int len = scores.length;
+			int[] hs = new int[len + 1];
+			for (int i = 0; i < len; i++)
+				hs[i] = scores[i];
+			hs[len] = score;
+			scores = hs;
+			
+			int max = scores[0];
+			for (int j = 1; j < len + 1; j++)
+	            if (scores[j] > max)
+	                max = scores[j];
+	         
+			highscore = max;
+		}
+		
+	}
 	
 	static void update_time() {
 		endTime = System.nanoTime();
@@ -262,6 +285,7 @@ public class MazeRunner {
 		System.out.println("Muhammad Abdullah Qureshi\n221-437659");
 	}
 	static void showHighScore() {
+		updateHighscore();
 		System.out.println("High Score: "+highscore);
 	}
 	
