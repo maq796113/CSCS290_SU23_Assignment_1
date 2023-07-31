@@ -103,7 +103,7 @@ public class MazeRunner {
 		System.out.println();
 		for (int k=0; k<maze.length; k++) {
 			for (int l=0; l<maze.length; l++) {
-				System.out.print(maze[k][l]);
+				System.out.print(maze[k][l]+" ");
 				}
 			System.out.println();
 			}
