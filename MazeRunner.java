@@ -91,14 +91,19 @@ public class MazeRunner {
 		switch(choice) {
 		case 'a':
 			startNewGame();
+			break;
 		case 'b':
 			showInstructions();
+			break;
 		case 'c':
 			showCredits();
+			break;
 		case 'd':
 			showHighScore();
+			break;
 		case 'e':
 			exitGame();
+			break;
 		default:
 			System.out.println("Invalid Choice");
 			break;
@@ -271,23 +276,11 @@ public class MazeRunner {
 	                elapsedTime = (endTime - startTime)/1000;
 					movePlayer(move);
 				}
-				scan.close();
+				
 			}
 			
 		});
-		thread.start();
 		
-		
-		try {
-			thread.join(25000);
-		} catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-		if (thread.isAlive()) {
-            thread.interrupt();
-            System.out.println("You Ran Out of Time!!\nYou Lost!");
-			playAgain();
-        }
 			
 	}
 	
@@ -324,6 +317,26 @@ public class MazeRunner {
 		numberOfSteps = 0;
 		score = 0;
 		playGame();
+		thread.start();
+		while (!exit_game) {
+			if (hasPlayerWon()) {
+				System.out.println("Congratulations you won");
+				updateScore();
+				displayResult();
+				playAgain();
+			}
+		}
+		try {
+			thread.join(25000);
+		} catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+		
+		if (thread.isAlive()) {
+            thread.interrupt();
+            System.out.println("You Ran Out of Time!!\nYou Lost!");
+			playAgain();
+        }
 	}
 	
 	static void showInstructions() {
@@ -347,6 +360,7 @@ public class MazeRunner {
 	static void exitGame() {
 		System.out.println("Exiting the Game.......");
 		exit_game = true;
+		scan.close();
 		System.exit(0);
 	}
 	
@@ -355,6 +369,7 @@ public class MazeRunner {
 		System.out.println("Welcome to the \"Maze Runner\" game!");
 		
 		gameMenu();
+		
 		
 	}
 
